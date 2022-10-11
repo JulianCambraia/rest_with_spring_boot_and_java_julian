@@ -6,16 +6,15 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- ** Content negotiation via Query Param localhost:8080/api/person/v1?mediaType=xml ou json
+ * * Content negotiation via Header Param localhost:8080/api/person/v1 (xml ou json) setando o Accept nos Headers do Postman
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorParameter(true)
-                .parameterName("mediaType")
-                .ignoreAcceptHeader(true)
+        configurer.favorParameter(false)
+                .ignoreAcceptHeader(false)
                 .useRegisteredExtensionsOnly(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .mediaType("json", MediaType.APPLICATION_JSON)
