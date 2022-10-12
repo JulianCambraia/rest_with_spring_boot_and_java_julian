@@ -37,24 +37,31 @@ public class PersonService {
 
         var vo = DozerMapper.parseObject(entity, PersonVO.class);
         vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+
         return vo;
     }
 
     public List<PersonVO> findAll() {
         logger.info("FindAll Persons");
-        return DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);
+        var persons = DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);
+        persons.forEach(vo -> vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel()));
+        return persons;
     }
 
     public PersonVO create(PersonVO person) {
         logger.info("Create One Person");
         var entity = DozerMapper.parseObject(person, Person.class);
-        return DozerMapper.parseObject(repository.save(entity), PersonVO.class);
+        var vo = DozerMapper.parseObject(repository.save(entity), PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+
+        return vo;
     }
 
     public PersonVOV2 create(PersonVOV2 person) {
         logger.info("Create One Person");
         var entity = mapper.convertVoToEntity(person);
-        return mapper.convertEntityToVo(repository.save(entity));
+        var vo = mapper.convertEntityToVo(repository.save(entity));
+        return vo;
     }
 
     public PersonVO update(PersonVO person) {
@@ -67,7 +74,9 @@ public class PersonService {
         entity.setGender(person.getGender());
 
         var result = repository.save(entity);
-        return DozerMapper.parseObject(result, PersonVO.class);
+        var vo = DozerMapper.parseObject(result, PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+        return vo;
     }
 
     public void delete(Long id) {

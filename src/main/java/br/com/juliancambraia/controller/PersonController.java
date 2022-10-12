@@ -3,7 +3,7 @@ package br.com.juliancambraia.controller;
 import br.com.juliancambraia.data.vo.v1.PersonVO;
 import br.com.juliancambraia.data.vo.v2.PersonVOV2;
 import br.com.juliancambraia.services.PersonService;
-import org.springframework.http.MediaType;
+import br.com.juliancambraia.util.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,36 +27,55 @@ public class PersonController {
     }
 
     @GetMapping(
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            produces = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_YML
+            })
     public List<PersonVO> findAll() {
         return service.findAll();
     }
 
     @GetMapping(value = "/{id}",
-            produces = {MediaType.APPLICATION_JSON_VALUE
-                    , MediaType.APPLICATION_XML_VALUE})
+            produces = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_XML,
+                    MediaType.APPLICATION_YML
+            })
     public PersonVO findById(@PathVariable(value = "id") Long id) {
         return service.findById(id);
     }
 
     @PostMapping(
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+            produces = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_XML,
+                    MediaType.APPLICATION_YML},
+            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,  MediaType.APPLICATION_YML}
     )
     public PersonVO create(@RequestBody PersonVO person) {
         return service.create(person);
     }
 
     @PostMapping(value = "/v2",
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            produces = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_XML,
+                    MediaType.APPLICATION_YML},
+            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public PersonVOV2 create(@RequestBody PersonVOV2 person) {
         return service.create(person);
     }
 
     @PutMapping(
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            produces = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_XML,
+                    MediaType.APPLICATION_YML},
+            consumes = {
+                    MediaType.APPLICATION_JSON,
+                    MediaType.APPLICATION_XML,
+                    MediaType.APPLICATION_YML
+            })
     public PersonVO update(@RequestBody PersonVO person) {
         return service.update(person);
     }
