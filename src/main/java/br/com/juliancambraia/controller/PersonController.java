@@ -1,8 +1,7 @@
 package br.com.juliancambraia.controller;
 
 import br.com.juliancambraia.data.vo.v1.PersonVO;
-import br.com.juliancambraia.data.vo.v2.PersonVOV2;
-import br.com.juliancambraia.services.PersonService;
+import br.com.juliancambraia.unittests.mapper.mocks.services.PersonService;
 import br.com.juliancambraia.util.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,19 +49,9 @@ public class PersonController {
                     MediaType.APPLICATION_JSON,
                     MediaType.APPLICATION_XML,
                     MediaType.APPLICATION_YML},
-            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML}
+            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,  MediaType.APPLICATION_YML}
     )
     public PersonVO create(@RequestBody PersonVO person) {
-        return service.create(person);
-    }
-
-    @PostMapping(value = "/v2",
-            produces = {
-                    MediaType.APPLICATION_JSON,
-                    MediaType.APPLICATION_XML,
-                    MediaType.APPLICATION_YML},
-            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public PersonVOV2 create(@RequestBody PersonVOV2 person) {
         return service.create(person);
     }
 
