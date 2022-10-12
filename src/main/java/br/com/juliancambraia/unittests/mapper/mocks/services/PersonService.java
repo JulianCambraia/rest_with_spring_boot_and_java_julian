@@ -1,11 +1,10 @@
-package br.com.juliancambraia.services;
+package br.com.juliancambraia.unittests.mapper.mocks.services;
 
 import br.com.juliancambraia.controller.PersonController;
 import br.com.juliancambraia.data.vo.v1.PersonVO;
-import br.com.juliancambraia.data.vo.v2.PersonVOV2;
+import br.com.juliancambraia.exceptions.RequiredObjectIsNullException;
 import br.com.juliancambraia.exceptions.ResourceNotFoundException;
 import br.com.juliancambraia.mapper.DozerMapper;
-import br.com.juliancambraia.mapper.custom.PersonMapper;
 import br.com.juliancambraia.model.Person;
 import br.com.juliancambraia.repository.PersonRepository;
 import org.springframework.stereotype.Service;
@@ -19,16 +18,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class PersonService {
 
-    private Logger logger = Logger.getLogger(PersonService.class.getName());
+    Logger logger = Logger.getLogger(PersonService.class.getName());
 
-    private final PersonRepository repository;
+    PersonRepository repository;
 
-    final
-    PersonMapper mapper;
-
-    public PersonService(PersonRepository repository, PersonMapper mapper) {
+    public PersonService(PersonRepository repository) {
         this.repository = repository;
-        this.mapper = mapper;
     }
 
     public PersonVO findById(Long id) {
@@ -50,6 +45,8 @@ public class PersonService {
 
     public PersonVO create(PersonVO person) {
         logger.info("Create One Person");
+        if (person == null) throw new RequiredObjectIsNullException();
+
         var entity = DozerMapper.parseObject(person, Person.class);
         var vo = DozerMapper.parseObject(repository.save(entity), PersonVO.class);
         vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
@@ -57,15 +54,10 @@ public class PersonService {
         return vo;
     }
 
-    public PersonVOV2 create(PersonVOV2 person) {
-        logger.info("Create One Person");
-        var entity = mapper.convertVoToEntity(person);
-        var vo = mapper.convertEntityToVo(repository.save(entity));
-        return vo;
-    }
-
     public PersonVO update(PersonVO person) {
         logger.info("Updated One Person");
+
+        if (person == null) throw new RequiredObjectIsNullException();
 
         Person entity = DozerMapper.parseObject(findById(person.getKey()), Person.class);
         entity.setFirstName(person.getFirstName());
