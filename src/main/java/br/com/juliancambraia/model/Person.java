@@ -81,11 +81,22 @@ public class Person implements Serializable {
 
         Person person = (Person) o;
 
-        return new EqualsBuilder().append(id, person.id).append(firstName, person.firstName).append(lastName, person.lastName).append(address, person.address).append(gender, person.gender).isEquals();
+        return new EqualsBuilder()
+                .append(id, person.id)
+                .append(firstName, person.firstName)
+                .append(lastName, person.lastName)
+                .append(address, person.address)
+                .append(gender, person.gender)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(firstName).append(lastName).append(address).append(gender).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id).append(firstName)
+                .append(lastName)
+                .append(address)
+                .append(gender)
+                .toHashCode();
     }
 }

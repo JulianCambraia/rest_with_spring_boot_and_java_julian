@@ -1,23 +1,27 @@
 package br.com.juliancambraia.data.vo.v1;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serializable;
 
-public class PersonVO implements Serializable {
+public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long key;
     private String firstName;
     private String lastName;
     private String address;
     private String gender;
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getFirstName() {
@@ -50,5 +54,35 @@ public class PersonVO implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PersonVO personVO = (PersonVO) o;
+
+        return new EqualsBuilder()
+                .appendSuper(super.equals(o))
+                .append(key, personVO.key)
+                .append(firstName, personVO.firstName)
+                .append(lastName, personVO.lastName)
+                .append(address, personVO.address)
+                .append(gender, personVO.gender)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .appendSuper(super.hashCode())
+                .append(key)
+                .append(firstName)
+                .append(lastName)
+                .append(address)
+                .append(gender)
+                .toHashCode();
     }
 }

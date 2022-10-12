@@ -1,5 +1,6 @@
 package br.com.juliancambraia.services;
 
+import br.com.juliancambraia.controller.PersonController;
 import br.com.juliancambraia.data.vo.v1.PersonVO;
 import br.com.juliancambraia.data.vo.v2.PersonVOV2;
 import br.com.juliancambraia.exceptions.ResourceNotFoundException;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class PersonService {
@@ -31,7 +35,9 @@ public class PersonService {
         logger.info("Finding on Person");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
-        return DozerMapper.parseObject(entity, PersonVO.class);
+        var vo = DozerMapper.parseObject(entity, PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+        return vo;
     }
 
     public List<PersonVO> findAll() {
@@ -54,7 +60,7 @@ public class PersonService {
     public PersonVO update(PersonVO person) {
         logger.info("Updated One Person");
 
-        Person entity = DozerMapper.parseObject(findById(person.getId()), Person.class);
+        Person entity = DozerMapper.parseObject(findById(person.getKey()), Person.class);
         entity.setFirstName(person.getFirstName());
         entity.setLastName(person.getLastName());
         entity.setAddress(person.getAddress());
