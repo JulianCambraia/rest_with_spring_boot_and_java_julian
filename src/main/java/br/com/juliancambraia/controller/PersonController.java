@@ -50,7 +50,7 @@ public class PersonController {
                     MediaType.APPLICATION_JSON,
                     MediaType.APPLICATION_XML,
                     MediaType.APPLICATION_YML},
-            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML}
+            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,  MediaType.APPLICATION_YML}
     )
     public PersonVO create(@RequestBody PersonVO person) {
         return service.create(person);
