@@ -2,32 +2,32 @@ package br.com.juliancambraia.data.vo.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.github.dozermapper.core.Mapping;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"})
 public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")
-    @Mapping("id")
-    private Long key;
+    private Long id;
     private String firstName;
     private String lastName;
     private String address;
     private String gender;
 
-    public Long getKey() {
-        return key;
+    public Long getId() {
+        return id;
     }
 
-    public void setKey(Long key) {
-        this.key = key;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -72,7 +72,7 @@ public class PersonVO extends RepresentationModel<PersonVO> implements Serializa
 
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
-                .append(key, personVO.key)
+                .append(id, personVO.id)
                 .append(firstName, personVO.firstName)
                 .append(lastName, personVO.lastName)
                 .append(address, personVO.address)
@@ -84,7 +84,7 @@ public class PersonVO extends RepresentationModel<PersonVO> implements Serializa
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
-                .append(key)
+                .append(id)
                 .append(firstName)
                 .append(lastName)
                 .append(address)

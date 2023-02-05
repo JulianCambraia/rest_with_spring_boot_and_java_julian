@@ -15,7 +15,7 @@
     <description>rest_with_spring_boot_and_java_julian</description>
     <properties>
         <java.version>19</java.version>
-        <dozer.version>6.4.0</dozer.version>
+        <model-mapper.version>3.1.0</model-mapper.version>
         <mysql-connector.version>8.0.30</mysql-connector.version>
         <springdoc.version>2.0.2</springdoc.version>
     </properties>
@@ -48,9 +48,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.dozermapper</groupId>
-            <artifactId>dozer-core</artifactId>
-            <version>${dozer.version}</version>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${model-mapper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelmapper.extensions</groupId>
+            <artifactId>modelmapper-jackson</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
