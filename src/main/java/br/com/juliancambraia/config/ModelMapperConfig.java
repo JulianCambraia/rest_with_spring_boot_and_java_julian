@@ -8,9 +8,6 @@ import java.util.List;
 
 @Configuration
 public class ModelMapperConfig {
-    private ModelMapperConfig() {
-    }
-
     static ModelMapper mapper = new ModelMapper();
 
     public static <O, D> D parseObject(O origin, Class<D> destination) {

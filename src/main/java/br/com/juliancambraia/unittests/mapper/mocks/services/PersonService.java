@@ -2,8 +2,10 @@ package br.com.juliancambraia.unittests.mapper.mocks.services;
 
 import br.com.juliancambraia.controller.PersonController;
 import br.com.juliancambraia.data.vo.v1.PersonVO;
+import br.com.juliancambraia.data.vo.v2.PersonVOV2;
 import br.com.juliancambraia.exceptions.RequiredObjectIsNullException;
 import br.com.juliancambraia.exceptions.ResourceNotFoundException;
+import br.com.juliancambraia.mapper.custom.PersonMapper;
 import br.com.juliancambraia.model.Person;
 import br.com.juliancambraia.repository.PersonRepository;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,9 @@ public class PersonService {
 
     @Autowired
     ModelMapper mapper;
+
+    @Autowired
+    PersonMapper personMapper;
 
     public PersonService(PersonRepository repository) {
         this.repository = repository;
@@ -83,5 +88,13 @@ public class PersonService {
     public void delete(Long id) {
         logger.info("Delete One Person");
         repository.deleteById(id);
+    }
+
+    public PersonVOV2 createV2(PersonVOV2 person) {
+        logger.info("Create One Person");
+        if (person == null) throw new RequiredObjectIsNullException();
+
+        var entity = personMapper.convertVoToEntity(person);
+        return personMapper.convertEntityToVo(repository.save(entity));
     }
 }
