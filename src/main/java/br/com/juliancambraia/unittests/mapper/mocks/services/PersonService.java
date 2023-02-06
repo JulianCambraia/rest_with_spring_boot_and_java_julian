@@ -2,13 +2,17 @@ package br.com.juliancambraia.unittests.mapper.mocks.services;
 
 import br.com.juliancambraia.controller.PersonController;
 import br.com.juliancambraia.data.vo.v1.PersonVO;
+import br.com.juliancambraia.data.vo.v2.PersonVOV2;
 import br.com.juliancambraia.exceptions.RequiredObjectIsNullException;
 import br.com.juliancambraia.exceptions.ResourceNotFoundException;
-import br.com.juliancambraia.mapper.DozerMapper;
+import br.com.juliancambraia.mapper.custom.PersonMapper;
 import br.com.juliancambraia.model.Person;
 import br.com.juliancambraia.repository.PersonRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,6 +26,12 @@ public class PersonService {
 
     PersonRepository repository;
 
+    @Autowired
+    ModelMapper mapper;
+
+    @Autowired
+    PersonMapper personMapper;
+
     public PersonService(PersonRepository repository) {
         this.repository = repository;
     }
@@ -29,8 +39,7 @@ public class PersonService {
     public PersonVO findById(Long id) {
         logger.info("Finding on Person");
         var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-
-        var vo = DozerMapper.parseObject(entity, PersonVO.class);
+        var vo = mapper.map(entity, PersonVO.class);
         vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
 
         return vo;
@@ -38,18 +47,23 @@ public class PersonService {
 
     public List<PersonVO> findAll() {
         logger.info("FindAll Persons");
-        var persons = DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);
-        persons.forEach(vo -> vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel()));
-        return persons;
+        var persons = repository.findAll();
+        var lists = new ArrayList<PersonVO>();
+        persons.forEach(person -> {
+            var vo = mapper.map(person, PersonVO.class);
+            vo.add(linkTo(methodOn(PersonController.class).findById(vo.getId())).withSelfRel());
+            lists.add(vo);
+        });
+        return lists;
     }
 
     public PersonVO create(PersonVO person) {
         logger.info("Create One Person");
         if (person == null) throw new RequiredObjectIsNullException();
 
-        var entity = DozerMapper.parseObject(person, Person.class);
-        var vo = DozerMapper.parseObject(repository.save(entity), PersonVO.class);
-        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+        var entity = mapper.map(person, Person.class);
+        var vo = mapper.map(repository.save(entity), PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getId())).withSelfRel());
 
         return vo;
     }
@@ -59,20 +73,28 @@ public class PersonService {
 
         if (person == null) throw new RequiredObjectIsNullException();
 
-        Person entity = DozerMapper.parseObject(findById(person.getKey()), Person.class);
+        Person entity = mapper.map(findById(person.getId()), Person.class);
         entity.setFirstName(person.getFirstName());
         entity.setLastName(person.getLastName());
         entity.setAddress(person.getAddress());
         entity.setGender(person.getGender());
 
         var result = repository.save(entity);
-        var vo = DozerMapper.parseObject(result, PersonVO.class);
-        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+        var vo = mapper.map(result, PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(vo.getId())).withSelfRel());
         return vo;
     }
 
     public void delete(Long id) {
         logger.info("Delete One Person");
         repository.deleteById(id);
+    }
+
+    public PersonVOV2 createV2(PersonVOV2 person) {
+        logger.info("Create One Person");
+        if (person == null) throw new RequiredObjectIsNullException();
+
+        var entity = personMapper.convertVoToEntity(person);
+        return personMapper.convertEntityToVo(repository.save(entity));
     }
 }

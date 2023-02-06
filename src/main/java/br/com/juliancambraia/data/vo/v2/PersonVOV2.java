@@ -3,11 +3,13 @@ package br.com.juliancambraia.data.vo.v2;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 public class PersonVOV2 implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;

@@ -47,7 +47,7 @@ class PersonServiceTest {
         var result = service.findById(2L);
 
         assertNotNull(result);
-        assertNotNull(result.getKey());
+        assertNotNull(result.getId());
         assertNotNull(result.getLinks());
         assertTrue(result.toString().contains("[</api/person/v1/2>;rel=\"self\"]"));
         assertEquals("Addres Test2", result.getAddress());
@@ -67,7 +67,7 @@ class PersonServiceTest {
 
         var personOne = result.get(1);
 
-        assertNotNull(personOne.getKey());
+        assertNotNull(personOne.getId());
         assertNotNull(personOne.getLinks());
         assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
         assertEquals("Addres Test1", personOne.getAddress());
@@ -82,13 +82,13 @@ class PersonServiceTest {
         var persisted = entity;
         persisted.setId(1L);
         var vo = input.mockVO(1);
-        vo.setKey(1L);
+        vo.setId(1L);
 
         when(repository.save(entity)).thenReturn(persisted);
         var result = service.create(vo);
 
         assertNotNull(result);
-        assertNotNull(result.getKey());
+        assertNotNull(result.getId());
         assertNotNull(result.getLinks());
         System.out.println(result.toString());
         assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
@@ -113,15 +113,15 @@ class PersonServiceTest {
         var persisted = entity;
         persisted.setId(1L);
         var vo = input.mockVO(1);
-        vo.setKey(1L);
+        vo.setId(1L);
 
-        when(repository.findById(vo.getKey())).thenReturn(Optional.of(entity));
+        when(repository.findById(vo.getId())).thenReturn(Optional.of(entity));
         when(repository.save(persisted)).thenReturn(entity);
 
         var result = service.update(vo);
 
         assertNotNull(result);
-        assertNotNull(result.getKey());
+        assertNotNull(result.getId());
         assertNotNull(result.getLinks());
         assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
         assertEquals("Addres Test1", result.getAddress());
