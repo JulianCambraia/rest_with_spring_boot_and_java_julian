@@ -1,10 +1,10 @@
 package br.com.juliancambraia.unittests.mapper.mocks.services;
 
 import br.com.juliancambraia.exceptions.RequiredObjectIsNullException;
-import br.com.juliancambraia.model.Person;
-import br.com.juliancambraia.repository.PersonRepository;
-import br.com.juliancambraia.services.PersonService;
-import br.com.juliancambraia.unittests.mapper.mocks.MockPerson;
+import br.com.juliancambraia.model.Book;
+import br.com.juliancambraia.repository.BookRepository;
+import br.com.juliancambraia.services.BookService;
+import br.com.juliancambraia.unittests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -24,25 +24,25 @@ import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-class PersonServiceTest {
+class BookServiceTest {
 
-    MockPerson input;
+    MockBook input;
 
     @InjectMocks
-    private PersonService service;
+    private BookService service;
 
     @Mock
-    private PersonRepository repository;
+    private BookRepository repository;
 
     @BeforeEach
     void setUp() {
-        input = new MockPerson();
+        input = new MockBook();
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testFindById() {
-        Person entity = input.mockEntity();
+        Book entity = input.mockEntity();
         entity.setId(1L);
 
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
@@ -52,11 +52,11 @@ class PersonServiceTest {
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
-        assertEquals("Addres Test0", result.getAddress());
-        assertEquals("First Name Test0", result.getFirstName());
-        assertEquals("Last Name Test0", result.getLastName());
-        assertEquals("Male", result.getGender());
+        assertTrue(result.toString().contains("[</api/book/v1/1>;rel=\"self\"]"));
+        assertEquals("Some Author0", result.getAuthor());
+        assertNotNull(result.getLaunchDate());
+        assertEquals(25D, result.getPrice());
+        assertEquals("Some Title0", result.getTitle());
     }
 
     @Test
@@ -69,22 +69,24 @@ class PersonServiceTest {
         assertNotNull(result);
         assertEquals(14, result.size());
 
-        var personOne = result.get(1);
+        var bookOne = result.get(1);
 
-        assertNotNull(personOne.getId());
-        assertNotNull(personOne.getLinks());
-        assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
-        assertEquals("Addres Test1", personOne.getAddress());
-        assertEquals("First Name Test1", personOne.getFirstName());
-        assertEquals("Last Name Test1", personOne.getLastName());
-        assertEquals("Female", personOne.getGender());
+        assertNotNull(bookOne.getId());
+        assertNotNull(bookOne.getLinks());
+        assertTrue(result.toString().contains("[</api/book/v1/1>;rel=\"self\"]"));
+        assertEquals("Some Author1", bookOne.getAuthor());
+        assertNotNull(bookOne.getLaunchDate());
+        assertEquals(25D, bookOne.getPrice());
+        assertEquals("Some Title1", bookOne.getTitle());
     }
 
     @Test
     void create() {
         var entity = input.mockEntity(1);
+
         var persisted = entity;
         persisted.setId(1L);
+
         var vo = input.mockVO(1);
         vo.setId(1L);
 
@@ -95,11 +97,11 @@ class PersonServiceTest {
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
-        assertEquals("Addres Test1", result.getAddress());
-        assertEquals("First Name Test1", result.getFirstName());
-        assertEquals("Last Name Test1", result.getLastName());
-        assertEquals("Female", result.getGender());
+        assertTrue(result.toString().contains("[</api/book/v1/1>;rel=\"self\"]"));
+        assertEquals("Some Author1", result.getAuthor());
+        assertNotNull(result.getLaunchDate());
+        assertEquals(25D, result.getPrice());
+        assertEquals("Some Title1", result.getTitle());
     }
 
     @Test
@@ -127,11 +129,11 @@ class PersonServiceTest {
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
-        assertEquals("Addres Test1", result.getAddress());
-        assertEquals("First Name Test1", result.getFirstName());
-        assertEquals("Last Name Test1", result.getLastName());
-        assertEquals("Female", result.getGender());
+        assertTrue(result.toString().contains("[</api/book/v1/1>;rel=\"self\"]"));
+        assertEquals("Some Author1", result.getAuthor());
+        assertNotNull(result.getLaunchDate());
+        assertEquals(25D, result.getPrice());
+        assertEquals("Some Title1", result.getTitle());
     }
 
     @Test
@@ -141,5 +143,15 @@ class PersonServiceTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testDelete() {
+        Book entity = input.mockEntity(1);
+        entity.setId(1L);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+
+        service.findById(1L);
     }
 }
