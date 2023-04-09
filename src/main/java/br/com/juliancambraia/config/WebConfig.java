@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * * Content negotiation via Header Param localhost:8080/api/person/v1 (xml ou json) setando o Accept nos Headers do Postman
+ * Via Query Param: http://localhost:8080/api/person/v1?mediaType=xml
+ * Via Header Accept: http://localhost:8080/api/person/v1/1 (application/xml ou application/json)
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
