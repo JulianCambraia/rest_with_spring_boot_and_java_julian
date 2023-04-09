@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockPerson {
-
-
     public Person mockEntity() {
         return mockEntity(0);
     }
@@ -52,5 +50,4 @@ public class MockPerson {
         person.setLastName("Last Name Test" + number);
         return person;
     }
-
 }

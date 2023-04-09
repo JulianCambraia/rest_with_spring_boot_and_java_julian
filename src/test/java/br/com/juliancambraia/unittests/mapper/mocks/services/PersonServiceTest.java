@@ -1,8 +1,11 @@
 package br.com.juliancambraia.unittests.mapper.mocks.services;
 
+import br.com.juliancambraia.config.ModelMapperConfig;
+import br.com.juliancambraia.data.vo.v1.PersonVO;
 import br.com.juliancambraia.exceptions.RequiredObjectIsNullException;
 import br.com.juliancambraia.model.Person;
 import br.com.juliancambraia.repository.PersonRepository;
+import br.com.juliancambraia.services.PersonService;
 import br.com.juliancambraia.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -26,6 +30,9 @@ import static org.mockito.Mockito.when;
 class PersonServiceTest {
 
     MockPerson input;
+
+    @Mock
+    ModelMapperConfig mapper;
 
     @InjectMocks
     private PersonService service;
@@ -41,31 +48,39 @@ class PersonServiceTest {
 
     @Test
     void testFindById() {
-        Person entity = input.mockEntity(2);
-        entity.setId(2L);
-        when(repository.findById(2L)).thenReturn(Optional.of(entity));
-        var result = service.findById(2L);
+        Person entity = input.mockEntity();
+        PersonVO vo = input.mockVO();
+        entity.setId(1L);
+        when(mapper.parseObject(entity, PersonVO.class)).thenReturn(vo);
+        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        var result = service.findById(1L);
 
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("[</api/person/v1/2>;rel=\"self\"]"));
-        assertEquals("Addres Test2", result.getAddress());
-        assertEquals("First Name Test2", result.getFirstName());
-        assertEquals("Last Name Test2", result.getLastName());
+        assertTrue(result.toString().contains("[</api/person/v1/1>;rel=\"self\"]"));
+        assertEquals("Addres Test0", result.getAddress());
+        assertEquals("First Name Test0", result.getFirstName());
+        assertEquals("Last Name Test0", result.getLastName());
         assertEquals("Male", result.getGender());
     }
 
     @Test
     void findAll() {
+        Person entity = input.mockEntity();
         var list = input.mockEntityList();
+        var vo = input.mockVO();
+
         when(repository.findAll()).thenReturn(list);
+        when(this.mapper.parseObject(entity, PersonVO.class)).thenReturn(vo);
         var result = service.findAll();
 
         assertNotNull(result);
         assertEquals(14, result.size());
 
         var personOne = result.get(1);
+
+        mapper.parseObject(entity, PersonVO.class);
 
         assertNotNull(personOne.getId());
         assertNotNull(personOne.getLinks());
@@ -79,12 +94,16 @@ class PersonServiceTest {
     @Test
     void create() {
         var entity = input.mockEntity(1);
+        var vo2 = mock(PersonVO.class);
         var persisted = entity;
         persisted.setId(1L);
         var vo = input.mockVO(1);
         vo.setId(1L);
 
+        when(mapper.parseObject(vo2, Person.class)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(persisted);
+
+        mapper.parseObject(vo2, Person.class);
         var result = service.create(vo);
 
         assertNotNull(result);
@@ -132,7 +151,7 @@ class PersonServiceTest {
 
     @Test
     void updateWithNullPerson() {
-        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> service.create(null));
+        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> service.update(null));
         String expectedMessage = "It is not allowed to persist a null object";
         String actualMessage = exception.getMessage();
 
