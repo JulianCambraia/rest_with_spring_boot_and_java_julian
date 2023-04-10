@@ -18,6 +18,8 @@
         <model-mapper.version>3.1.1</model-mapper.version>
         <mysql-connector.version>8.0.32</mysql-connector.version>
         <springdoc.version>2.0.4</springdoc.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
+        <rest-assured.version>5.3.0</rest-assured.version>
     </properties>
     <dependencies>
         <dependency>
@@ -81,6 +83,18 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
