@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("RESTFul API with Java 18 and Spring Boot 3")
+                        .title("RESTFul API with Java 19 and Spring Boot 3.0.2 ")
                         .version("v1")
                         .description("Some description about your API")
                         .termsOfService("https://api.github.com/users/juliancambraia/repos")
