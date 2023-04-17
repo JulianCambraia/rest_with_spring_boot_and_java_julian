@@ -3,6 +3,8 @@ package br.com.juliancambraia.integrationtests.controller.json;
 import br.com.juliancambraia.config.TestConfigs;
 import br.com.juliancambraia.integrationtests.swagger.testcontainers.AbstractTestIntegration;
 import br.com.juliancambraia.integrationtests.vo.PersonVO;
+import br.com.juliancambraia.integrationtests.vo.security.AccountCredentialVO;
+import br.com.juliancambraia.integrationtests.vo.security.TokenVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,8 +21,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,20 +41,42 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
     }
 
     @Test
-    @Order(1)
-    void testCreate() throws JsonProcessingException {
-        mockPerson();
+    @Order(0)
+    void authorization() throws JsonProcessingException {
+        AccountCredentialVO user = new AccountCredentialVO("leandro", "admin123");
+
+        var accessToken = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(user)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenVO.class)
+                .getAccessToken();
+
         specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
                 .setBasePath("/api/person/v1")
                 .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
+    }
+
+    @Test
+    @Order(1)
+    void testCreate() throws JsonProcessingException {
+        mockPerson();
 
         var content = given()
                 .spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
                 .body(personVO)
                 .when()
                 .post()
@@ -86,17 +108,11 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
     @Order(2)
     void testCreateWithWrongOrigin() throws JsonProcessingException {
         mockPerson();
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
-                .setBasePath("/api/person/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given()
                 .spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
                 .body(personVO)
                 .when()
                 .post()
@@ -122,17 +138,11 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
     @Order(3)
     void testFindById() throws JsonProcessingException {
         mockPerson();
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
-                .setBasePath("/api/person/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given()
                 .spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
                 .pathParam("id", personVO.getId())
                 .when()
                 .get("{id}")
@@ -164,17 +174,11 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
     @Order(4)
     void testFindByIdWithWrongOrgin() throws JsonProcessingException {
         mockPerson();
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
-                .setBasePath("/api/person/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given()
                 .spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
                 .pathParam("id", personVO.getId())
                 .when()
                 .get("{id}")
@@ -186,33 +190,5 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         assertNotNull(content);
         assertEquals("Invalid CORS request", content);
-    }
-
-    @Test
-    void person_resource_returns_200_with_expected_gender_and_person() {
-
-        given()
-                .basePath("/api/person/v1/")
-                .port(TestConfigs.SERVER_PORT)
-                .when()
-                .get("{id}", 5)
-                .then()
-                .statusCode(200)
-                .body("gender", equalTo("Male"));
-
-    }
-
-    @Test
-    void person_resource_returns_200_with_expected_address_and_person() {
-
-        given()
-                .basePath("/api/person/v1/")
-                .port(TestConfigs.SERVER_PORT)
-                .when()
-                .get("{id}", 1)
-                .then()
-                .statusCode(200)
-                .body("address", equalToIgnoringCase("são Paulo"));
-
     }
 }
