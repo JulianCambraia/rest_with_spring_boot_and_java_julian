@@ -12,11 +12,14 @@ import jakarta.persistence.TemporalType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
