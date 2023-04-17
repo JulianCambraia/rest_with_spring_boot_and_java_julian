@@ -2,6 +2,11 @@ server:
   port: 8888
 cors:
   originPatterns: "http://localhost:8080,http://localhost:3000,https://www.oracle.com/"
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,4 +21,6 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     use-root-path: true
-  paths-to-match: /api/**/v1/**
+  pathsToMatch:
+    - /auth/**
+    - /api/**/v1/**
