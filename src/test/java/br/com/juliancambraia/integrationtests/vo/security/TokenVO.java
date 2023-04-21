@@ -1,12 +1,13 @@
 package br.com.juliancambraia.integrationtests.vo.security;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
+@XmlRootElement
 public class TokenVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

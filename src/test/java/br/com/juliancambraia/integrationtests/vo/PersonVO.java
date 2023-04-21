@@ -1,11 +1,12 @@
 package br.com.juliancambraia.integrationtests.vo;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
-
+@XmlRootElement
 public class PersonVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -14,6 +15,9 @@ public class PersonVO implements Serializable {
     private String lastName;
     private String address;
     private String gender;
+
+    public PersonVO() {
+    }
 
     public Long getId() {
         return id;

@@ -1,16 +1,21 @@
 package br.com.juliancambraia.integrationtests.vo.security;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+@XmlRootElement
 public class AccountCredentialVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private String username;
     private String password;
+
+    public AccountCredentialVO() {
+    }
 
     public AccountCredentialVO(String username, String password) {
         this.username = username;
