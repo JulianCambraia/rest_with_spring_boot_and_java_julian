@@ -82,13 +82,11 @@ class BookServiceTest {
 
     @Test
     void create() {
-        var entity = input.mockEntity(1);
-
+        var entity = input.mockEntity(2);
         var persisted = entity;
-        persisted.setId(1L);
-
-        var vo = input.mockVO(1);
-        vo.setId(1L);
+        persisted.setId(2L);
+        var vo = input.mockVO(2);
+        vo.setId(2L);
 
         when(repository.save(entity)).thenReturn(persisted);
 
@@ -97,11 +95,11 @@ class BookServiceTest {
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
-        assertTrue(result.toString().contains("[</api/book/v1/1>;rel=\"self\"]"));
-        assertEquals("Some Author1", result.getAuthor());
+        assertTrue(result.toString().contains("[</api/book/v1/2>;rel=\"self\"]"));
+        assertEquals("Some Author2", result.getAuthor());
         assertNotNull(result.getLaunchDate());
         assertEquals(25D, result.getPrice());
-        assertEquals("Some Title1", result.getTitle());
+        assertEquals("Some Title2", result.getTitle());
     }
 
     @Test

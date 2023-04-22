@@ -1,4 +1,4 @@
-package br.com.juliancambraia.integrationtests.controller.json;
+package br.com.juliancambraia.integrationtests.controller.xml;
 
 import br.com.juliancambraia.config.TestConfigs;
 import br.com.juliancambraia.integrationtests.swagger.testcontainers.AbstractTestIntegration;
@@ -8,7 +8,7 @@ import br.com.juliancambraia.integrationtests.vo.security.TokenVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -30,15 +30,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonControllerJsonTest extends AbstractTestIntegration {
+class PersonControllerXmlTest extends AbstractTestIntegration {
     private static RequestSpecification specification;
-    private static ObjectMapper objectMapper;
+    private static XmlMapper xmlMapper;
     private static PersonVO personVO;
 
     @BeforeAll
     public static void setUp() {
-        objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        xmlMapper = new XmlMapper();
+        xmlMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         personVO = new PersonVO();
     }
@@ -51,7 +51,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
         var accessToken = given()
                 .basePath("/auth/signin")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                //.accept(TestConfigs.CONTENT_TYPE_XML)
                 .body(user)
                 .when()
                 .post()
@@ -78,7 +79,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         var content = given()
                 .spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
                 .body(personVO)
                 .when()
                 .post()
@@ -88,7 +90,7 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
                 .body()
                 .asString();
 
-        PersonVO createdPerson = objectMapper.readValue(content, PersonVO.class);
+        PersonVO createdPerson = xmlMapper.readValue(content, PersonVO.class);
         personVO = createdPerson;
 
         assertNotNull(createdPerson);
@@ -113,7 +115,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         var content = given()
                 .spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
                 .body(personVO)
                 .when()
                 .put()
@@ -123,7 +126,7 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
                 .body()
                 .asString();
 
-        PersonVO createdPerson = objectMapper.readValue(content, PersonVO.class);
+        PersonVO createdPerson = xmlMapper.readValue(content, PersonVO.class);
         personVO = createdPerson;
 
         assertNotNull(createdPerson);
@@ -148,7 +151,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         var content = given()
                 .spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
                 .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
                 .pathParam("id", personVO.getId())
                 .when()
@@ -159,7 +163,7 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
                 .body()
                 .asString();
 
-        PersonVO createdPerson = objectMapper.readValue(content, PersonVO.class);
+        PersonVO createdPerson = xmlMapper.readValue(content, PersonVO.class);
         personVO = createdPerson;
 
         assertNotNull(createdPerson);
@@ -183,7 +187,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         given()
                 .spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
                 .pathParam("id", personVO.getId())
                 .when()
                 .delete("{id}")
@@ -197,7 +202,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         var content = given()
                 .spec(specification)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
+                .accept(TestConfigs.CONTENT_TYPE_XML)
                 .when()
                 .get()
                 .then()
@@ -206,7 +212,7 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
                 .body()
                 .asString();
 
-        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<>() {
+        List<PersonVO> people = xmlMapper.readValue(content, new TypeReference<>() {
         });
         var foundPersonOne = people.get(0);
 
@@ -252,7 +258,8 @@ class PersonControllerJsonTest extends AbstractTestIntegration {
 
         given()
             .spec(specificationWithoutToken)
-            .contentType(TestConfigs.CONTENT_TYPE_JSON)
+            .contentType(TestConfigs.CONTENT_TYPE_XML)
+            .accept(TestConfigs.CONTENT_TYPE_XML)
             .when()
             .get()
             .then()
