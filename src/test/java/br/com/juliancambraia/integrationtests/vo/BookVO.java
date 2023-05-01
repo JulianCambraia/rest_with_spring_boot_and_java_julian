@@ -1,34 +1,29 @@
-package br.com.juliancambraia.data.vo.v1;
+package br.com.juliancambraia.integrationtests.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-@JsonPropertyOrder({"id", "author", "launchDate", "price", "title"})
-public class BookVO extends RepresentationModel<BookVO> implements Serializable {
+@XmlRootElement
+public class BookVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("id")
     private Long id;
 
     private String author;
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
     private Date launchDate;
 
     private Double price;
 
     private String title;
+
+    public BookVO() {
+    }
 
     public Long getId() {
         return id;
